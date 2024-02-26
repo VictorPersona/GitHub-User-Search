@@ -1,3 +1,5 @@
+Hosting URL: https://github-user-search-6c0a3.web.app
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
