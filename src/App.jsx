@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import UserCard from './assets/UserCard'
 
 import './App.css'
@@ -13,11 +13,11 @@ function App() {
 */
 
   const [userQuery, setUserQuery] = useState('')
-  const [apiRespose, setApiResponse] = useState(null)
+  const [apiResponse, setApiResponse] = useState(null)
   let userList = null
 
-  if (apiRespose && apiRespose.items) {
-    userList = apiRespose.items.map((item) => {
+  if (apiResponse && apiResponse.items) {
+    userList = apiResponse.items.map((item) => {
       return (
         <UserCard
           key={item.id}
@@ -30,16 +30,31 @@ function App() {
   }
   function handleUserQuery(event) {
     event.preventDefault()
-    fetch(`https://api.github.com/search/users?q=${userQuery}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setApiResponse(data)
-      })
-      .catch((error) => {
-        console.error('There was a problem with the fetch operation:', error)
-      })
+
     setUserQuery('')
   }
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      if (userQuery.trim() !== '') {
+        fetch(`https://api.github.com/search/users?q=${userQuery}`)
+          .then((res) => res.json())
+          .then((data) => {
+            setApiResponse(data)
+          })
+          .catch((error) => {
+            console.error(
+              'There was a problem with the fetch operation:',
+              error
+            )
+          })
+      } else {
+        setApiResponse(null)
+      }
+    }, 1000)
+
+    return () => clearTimeout(getData)
+  }, [userQuery])
 
   return (
     <>
